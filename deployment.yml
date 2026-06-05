@@ -1,23 +1,23 @@
 apiVersion: apps/v1
-  kind: Deployment
-  metadata:
-    name: rate-limited-app
-  spec:
-    replicas: 1
-    selector:
-      matchLabels:
+kind: Deployment
+metadata:
+  name: rate-limited-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rate-limited
+  template:
+    metadata:
+      labels:
         app: rate-limited
-    template:
-      metadata:
-        labels:
-          app: rate-limited
-      spec:
-        initContainers:
-        - name: check-dependency
-          image: curlimages/curl:latest
-          command: ['sh', '-c', 'curl --fail --retry 1 --max-time 5 https://ysw1vywvcf.execute-api.us-east-1.amazonaws.com/live/health']
-        containers:
-        - name: app
-          image: gcr.io/google-samples/gb-frontend:v5
-          ports:
-          - containerPort: 80
+    spec:
+      initContainers:
+      - name: check-dependency
+        image: curlimages/curl:latest
+        command: ['sh', '-c', 'curl --fail --retry 1 --max-time 5 https://ysw1vywvcf.execute-api.us-east-1.amazonaws.com/live/health']
+      containers:
+      - name: app
+        image: gcr.io/google-samples/gb-frontend:v5
+        ports:
+        - containerPort: 80
